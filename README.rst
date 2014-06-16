@@ -66,7 +66,7 @@ generate a payment URL
   .. code-block:: scala
 
     def paymentUrl(amount: Long, userId: Long, productName: String, userFirstName: Option[String] = None, userLastName: Option[String] = None, userEmail: Option[String] = None): String = {
-      val paymentDetails = Json.obj("productName" -> productName)
+      val paymentDetails = Json.obj("productName" -> productName) // Could be anything, it is meant to store any data related to the payment
       val payment = PayplugPayment(userId, paymentDetails, amount, PayplugPaymentStatus.Pending, userFirstName, userLastName, userEmail)
       val persistedPayment =  ??? // Here you will need to persist your payment object and give it an id
       payplugUtils.paymentUrl(persistedPayment)
