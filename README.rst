@@ -2,7 +2,7 @@
 play-payplug
 =============
 
-*play-payplug* is a Play library for simplifying payment using PayPlug in your Play application.
+*play-payplug* is a Play library for simplifying payment using PayPlug ( https://www.payplug.fr ) in your Play application.
 
 .. |26lights| image:: 26lights.png
     :width: 64px
@@ -46,14 +46,14 @@ If you want to use the default ``PayplugUtils`` implementation, you will need to
 .. code-block:: nginx
 
   payplug {
-    baseUrl = "http://localhost:9000/payplug"                 # Base PayPlug URL
+    baseUrl = "https://www.payplug.fr/p/PERSONNAL_HASH"       # Base PayPlug URL
     privateKeyFile = "conf/payplug.pem"                       # Path to a file containing your PayPlug private key
     publicKeyFile = "conf/payplug.pub"                        # Path to a file containing PayPlug public key
     returnUrl = "http://localhost:9000/"                      # URL on which the user will be redirected upon payment completion
     ipnUrl = "http://localhost:9000/api/payment/:id/notify"   # URL called by PayPlug to confirm payment (:id will be replaced by your payment id)
   }
 
-The PayPlug base URL, your private key and PayPlug public key are the one you retrieved from the PayPlug API, the last two should point to meaningful URL in your application.
+The PayPlug base URL, your private key and PayPlug public key are directly retrieved from the PayPlug API, the last two should point to meaningful URLs in your application.
 
 Sample source code
 ===================
@@ -70,19 +70,19 @@ instantiate the PayPlug utility class
 
 
 generate a payment URL
-  this is an URL to PayPlug payment website, this is where your user will enter its payment details and where they will be validated by PayPlug:
+  this is an URL to the PayPlug payment website, this is where your user will enter its payment details and where they will be validated by PayPlug:
 
   .. code-block:: scala
 
     def paymentUrl(amount: Long, userId: Long, productName: String, userFirstName: Option[String] = None, userLastName: Option[String] = None, userEmail: Option[String] = None): String = {
       val paymentDetails = Json.obj("productName" -> productName) // Could be anything, it is meant to store any data related to the payment
       val payment = PayplugPayment(userId, paymentDetails, amount, PayplugPaymentStatus.Pending, userFirstName, userLastName, userEmail)
-      val persistedPayment =  ??? // Here you will need to persist your payment object and give it an id
+      val persistedPayment =  ??? // Here you will need to persist your payment object and give it a unique id
       payplugUtils.paymentUrl(persistedPayment)
     }
 
 have an IPN Action
-  this should be a publicy internet-accessible route which will handle the notification of the payment like this:
+  this should be a publicly internet-accessible route which will handle the notification of the payment like this:
   
   .. code-block:: scala
 
@@ -92,6 +92,7 @@ have an IPN Action
       // Here you should persist the updated payment
       if(updated.status == PayplugPaymentStatus.Paid) {
         // The payment is now validated, you should do something about it (continue to shipping process, activate rights, and so on...)
+        val productName = (updated.details \ "productName").as[String] // You can retrieve the details you saved in your payment to know what the user paid for
       }
       NoContent
     }
@@ -108,6 +109,7 @@ To do this, simply add it to your routes:
 
   GET           /payplug                   twentysix.payplug.controllers.PayPlugMockController.pay(data, sign)
 
-and make sure your ``payplug.baseUrl`` configuration point to this route.
+and make sure your ``payplug.baseUrl`` configuration point to this route (e.g. ``http://localhost:9000/payplug``).
 
-It will them check if your payment data is correct and then call the IPN url so that everything will run like it should in production (without the real payment part).
+It will then check if your payment data is correct and then call the IPN url so that everything will run like it should in production (without the real payment part).
+
