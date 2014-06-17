@@ -60,6 +60,15 @@ Sample source code
 
 In order to use it in your application you will need to:
 
+instantiate the PayPlug utility class
+  the simplest way to do it is to use the ``PayPlugUtils`` implementation which uses the ``application.conf`` settings as described above.
+  To do this, simply declare it like this:
+
+  .. code-block:: scala
+
+    val payplugUtils = PayplugUtils()
+
+
 generate a payment URL
   this is an URL to PayPlug payment website, this is where your user will enter its payment details and where they will be validated by PayPlug:
 
