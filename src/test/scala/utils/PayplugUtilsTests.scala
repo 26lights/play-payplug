@@ -71,7 +71,7 @@ class PayplugUtilsTests extends FunSpec with Matchers with GivenWhenThen {
     }
   }
 
-  val validPayment = PayplugPayment(26, Json.obj("a" -> "1"), 2600, PayplugPaymentStatus.Pending, id=Some(42))
+  val validPayment = PayplugPayment("26", Json.obj("a" -> "1"), 2600, PayplugPaymentStatus.Pending, id=Some("42"))
   val validParams = Json.obj(
     "id_transaction" -> "UnitTest-T1",
     "state" -> "paid",
@@ -165,7 +165,7 @@ class PayplugUtilsTests extends FunSpec with Matchers with GivenWhenThen {
       Security.addProvider(new BouncyCastleProvider())
 
       Given("a pending Payment and a IPN request with a wrong customer id")
-      val payment = validPayment.copy(userId = 666)
+      val payment = validPayment.copy(userId = "666")
       val params = validParams
       val signature = validSignature
 
@@ -184,7 +184,7 @@ class PayplugUtilsTests extends FunSpec with Matchers with GivenWhenThen {
       Security.addProvider(new BouncyCastleProvider())
 
       Given("a pending Payment and a IPN request with a wrong order id")
-      val payment = validPayment.copy(id = Some(666))
+      val payment = validPayment.copy(id = Some("666"))
       val params = validParams
       val signature = validSignature
 

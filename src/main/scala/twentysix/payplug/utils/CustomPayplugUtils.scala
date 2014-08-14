@@ -52,8 +52,8 @@ case class CustomPayplugUtils(applicationName: String, returnUrl: String, ipnUrl
 
     val transactionId = body \ "id_transaction"
     val state = (body \ "state").as[String]
-    val userId = (body \ "customer").as[String].toLong
-    val paymentId = (body \ "order").as[String].toLong
+    val userId = (body \ "customer").as[String]
+    val paymentId = (body \ "order").as[String]
     val details = Json.parse((body \ "custom_data").as[String]).asInstanceOf[JsObject]
     val origin = body \ "origin"
 
@@ -112,14 +112,14 @@ case class CustomPayplugUtils(applicationName: String, returnUrl: String, ipnUrl
   }
 
   def paymentUrl(payment: PayplugPayment) = {
-    val paymentIdStr = payment.id.get.toString
+    val paymentIdStr = payment.id.get
     val params = Map(
       "amount" -> payment.amount.toString,
       "currency" -> "EUR",
       "ipn_url" -> ipnUrl.replaceAllLiterally(":id", paymentIdStr),
       "return_url" -> returnUrl,
       "order" -> paymentIdStr,
-      "customer" -> payment.userId.toString,
+      "customer" -> payment.userId,
       "custom_data" -> payment.details.toString,
       "origin" -> applicationName
     ) ++ payment.userEmail.map{"email" -> _} ++ payment.userFirstName.map{"first_name" -> _} ++ payment.userLastName.map{"last_name" -> _}

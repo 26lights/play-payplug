@@ -11,7 +11,7 @@ object PayplugPaymentStatus extends Enumeration {
 
 import twentysix.payplug.models.PayplugPaymentStatus.PayplugPaymentStatus
 
-case class PayplugPayment(userId: Long,
+case class PayplugPayment(userId: String,
                           details: JsValue,
                           amount: Long,
                           status: PayplugPaymentStatus,
@@ -19,4 +19,4 @@ case class PayplugPayment(userId: Long,
                           userLastName: Option[String] = None,
                           userEmail: Option[String] = None,
                           creationDate:DateTime = now(),
-                          id: Option[Long] = None)
+                          id: Option[String] = None)
