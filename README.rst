@@ -29,7 +29,7 @@ and add play-payplug to your library dependencies:
 .. code-block:: scala
 
   libraryDependencies ++= Seq (
-    "26lights"  %% "play-payplug"  % "0.2.0"
+    "26lights"  %% "play-payplug"  % "0.3.0"
   )
 
 Configuration

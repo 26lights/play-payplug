@@ -4,6 +4,7 @@ import play.api.mvc.{Controller, Action}
 import org.apache.commons.codec.binary.Base64
 import java.security.Signature
 import java.net.URLDecoder
+import play.api.Play.current
 import play.api.Logger
 import play.api.libs.ws.WS
 import play.api.libs.json.Json
