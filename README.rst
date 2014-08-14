@@ -29,7 +29,7 @@ and add play-payplug to your library dependencies:
 .. code-block:: scala
 
   libraryDependencies ++= Seq (
-    "26lights"  %% "play-payplug"  % "0.1.0"
+    "26lights"  %% "play-payplug"  % "0.2.0"
   )
 
 Configuration
@@ -74,7 +74,7 @@ generate a payment URL
 
   .. code-block:: scala
 
-    def paymentUrl(amount: Long, userId: Long, productName: String, userFirstName: Option[String] = None, userLastName: Option[String] = None, userEmail: Option[String] = None): String = {
+    def paymentUrl(amount: Long, userId: String, productName: String, userFirstName: Option[String] = None, userLastName: Option[String] = None, userEmail: Option[String] = None): String = {
       val paymentDetails = Json.obj("productName" -> productName) // Could be anything, it is meant to store any data related to the payment
       val payment = PayplugPayment(userId, paymentDetails, amount, PayplugPaymentStatus.Pending, userFirstName, userLastName, userEmail)
       val persistedPayment =  ??? // Here you will need to persist your payment object and give it a unique id
@@ -86,7 +86,7 @@ have an IPN Action
   
   .. code-block:: scala
 
-    def notify(paymentId: Long) = Action(parse.raw) { request =>
+    def notify(paymentId: String) = Action(parse.raw) { request =>
       val payment = ??? // Here you will need to retrieve your payment from your persistance
       val updated = payplugUtils.updatePaymentFromIpn(payment, request)
       // Here you should persist the updated payment
